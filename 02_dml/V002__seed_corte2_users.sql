@@ -1,8 +1,8 @@
--- Corte 2 seed emails match drp-front synthetic accounts.
+-- Corte 2 fixture only. Do not cherry-pick V002 onto qa/main.
 -- password_hash is a placeholder: drp-identity-api (bcrypt) owns the real hash.
 -- Frontend Corte 2 does not read this table (synthetic adapter).
 
-INSERT INTO users (id, email, password_hash, display_name)
+INSERT INTO identity.users (id, email, password_hash, display_name)
 VALUES
   (
     '44444444-4444-4444-4444-444444444444',
@@ -17,7 +17,7 @@ VALUES
     'Admin SpaceHub'
   );
 
-INSERT INTO user_roles (user_id, role)
+INSERT INTO identity.user_roles (user_id, role)
 VALUES
   ('44444444-4444-4444-4444-444444444444', 'USER'),
   ('66666666-6666-6666-6666-666666666666', 'ADMIN');
