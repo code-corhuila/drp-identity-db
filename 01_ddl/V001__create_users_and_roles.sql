@@ -3,7 +3,7 @@
 -- Flyway runs as identity_app with search_path=identity.
 -- Changelog table: flyway_identity_history (per-domain control table).
 
-CREATE TABLE users (
+CREATE TABLE identity.users (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email         VARCHAR(320) NOT NULL,
   password_hash TEXT NOT NULL,
@@ -14,8 +14,8 @@ CREATE TABLE users (
   UNIQUE (email)
 );
 
-CREATE TABLE user_roles (
-  user_id UUID NOT NULL REFERENCES users(id),
+CREATE TABLE identity.user_roles (
+  user_id UUID NOT NULL REFERENCES identity.users(id),
   role    VARCHAR(32) NOT NULL CHECK (role IN ('USER', 'ADMIN')),
   PRIMARY KEY (user_id, role)
 );
