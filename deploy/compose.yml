@@ -1,0 +1,31 @@
+# Migrate-only job (Anexo J). No Postgres container, no volume.
+# Start the engine from drp-infra-postgres first:
+#   docker compose --env-file env/dev.env -f deploy/compose.yml up -d
+# Then:
+#   docker compose -f deploy/compose.yml run --rm identity-migrate
+
+name: ${COMPOSE_PROJECT_NAME:-drp-dev}
+
+services:
+  identity-migrate:
+    image: flyway/flyway:10
+    container_name: drp-identity-migrate
+    command: -connectRetries=12 migrate
+    environment:
+      FLYWAY_URL: ${FLYWAY_URL:-jdbc:postgresql://postgres:5432/drp}
+      FLYWAY_USER: ${FLYWAY_USER:-identity_app}
+      FLYWAY_PASSWORD: ${FLYWAY_PASSWORD:-change-me-identity}
+      FLYWAY_SCHEMAS: identity
+      FLYWAY_TABLE: flyway_identity_history
+      FLYWAY_LOCATIONS: filesystem:/flyway/sql/ddl,filesystem:/flyway/sql/dml,filesystem:/flyway/sql/dcl
+    volumes:
+      - ../01_ddl:/flyway/sql/ddl:ro
+      - ../02_dml:/flyway/sql/dml:ro
+      - ../03_dcl:/flyway/sql/dcl:ro
+    networks:
+      - pg
+
+networks:
+  pg:
+    name: ${IDENTITY_DB_NETWORK:-drp-dev_default}
+    external: true
